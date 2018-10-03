@@ -21,12 +21,12 @@
   <arg name="local_planner"   default="eband"/>
   <arg name="planner"         default="base"/>
   <!-- Robot pose in Gazebo for initial demo -->
-  <arg name="gzpose"         default="-x -0.3343 -y -0.0321 -z -0.0012 -R -0.005 -P 0.00322 -Y -0.8355"/>
+  <!-- <arg name="gzpose"         default="-x -0.3343 -y -0.0321 -z -0.0012 -R -0.005 -P 0.00322 -Y -0.8355"/> -->
   <!-- Robot pose in Gazebo for Tasks E and C -->
-  <!-- <arg name="gzpose"         default="-x -1.146 -y -6.145 -z -0.001 -R -0.002 -P 0.001 -Y -1.593"/> -->
+  <arg name="gzpose"         default="-x -1.146 -y -6.145 -z -0.001 -R -0.002 -P 0.001 -Y -1.593"/>
   <!-- Robot pose in Gazebo for Task A -->
   <!-- <arg name="gzpose"     default="-x 2.40 -y -11.0 -z -0.003 -R 0.0 -P 0.0 -Y 70.0"/> -->
- 
+
   <!-- Simulation -->
   <arg name="robot"       default="steel"/>
   <arg name="rviz"        default="true"/>
@@ -36,7 +36,7 @@
   <arg name="multiple"    default="false"/>
 
   <!-- Definitions of pregrasp motion -->
-  <rosparam command="load" file="$(find robotics_project)/config/pick_motions.yaml" /> 
+  <rosparam command="load" file="$(find robotics_project)/config/pick_motions.yaml" />
 
   <!-- ROS NODES -->
 
@@ -84,8 +84,8 @@
     <node pkg="robotics_project" type="sm_students.py" name="logic_state_machine" output="screen">
       <param name="global_loc_srv" value=""/>
       <param name="clear_costmaps_srv"  value=""/>
-      <param name="pick_srv"            value=""/>
-      <param name="place_srv"           value=""/>
+      <param name="pick_srv"            value="/$(arg namespace_project)/pick_the_cube"/>
+      <param name="place_srv"           value="/$(arg namespace_project)/place_the_cube"/>
       <param name="nav_goal_topic"      value=""/>
       <param name="cmd_vel_topic"       value="/key_vel"/>
       <param name="move_base_frame"     value=""/>
@@ -107,10 +107,10 @@
     </node> -->
 
     <!-- Node exposing service to trigger the pick and place -->
-    <node pkg="robotics_project" name="manipulation_client" type="manipulation_client.py" output="screen">  
-      <param name="marker_pose_topic"   value="/place_holder4"/>
-      <param name="pick_srv"            value="/place_holder5"/>
-      <param name="place_srv"           value="/place_holder6"/>
+    <node pkg="robotics_project" name="manipulation_client" type="manipulation_client.py" output="screen">
+      <param name="marker_pose_topic"   value="/place_holder11"/>
+      <param name="pick_srv"            value="/$(arg namespace_project)/pick_the_cube"/>
+      <param name="place_srv"           value="/$(arg namespace_project)/place_the_cube"/>
       <param name="move_head_srv"       value="/$(arg namespace_project)/move_head_gui"/>
       <param name="pickup_marker_pose"  value="/place_holder7"/>
       <param name="place_marker_pose"   value="/place_holder8"/>
@@ -119,19 +119,19 @@
      <!-- Arm manipulation node -->
     <node pkg="robotics_project" name="manipulation_server" type="manipulation_server.py" output="screen">
         <rosparam command="load" file="$(find robotics_project)/config/pick_and_place_params.yaml" />
-        <param name="pickup_marker_pose"  value="/place_holder9" />
-        <param name="place_marker_pose"   value="/place_holder10" />
+        <param name="pickup_marker_pose"  value="/place_holder7" />
+        <param name="place_marker_pose"   value="/place_holder8" />
     </node>
 
     <!-- Aruco marker detector -->
-<!--     <node pkg="aruco_ros" type="single"  name="aruco_single" output="screen">
+    <node pkg="aruco_ros" type="single"  name="aruco_single" output="screen">
         <remap from="/camera_info"        to="/xtion/rgb/camera_info" />
         <remap from="/image"              to="/xtion/rgb/image_rect_color" />
         <param name="marker_pose_topic"   value="/place_holder11"/>
         <param name="base_frame"          value="/base_footprint"/>
         <param name="camera_frame"        value="xtion_rgb_optical_frame"/>
         <param name="marker_frame"        value="aruco_frame" />
-    </node> -->
+    </node>
   </group>
 
   <!-- Map providers -->
@@ -141,6 +141,6 @@
   </group> -->
 
   <!-- RVIZ -->
-  <node name="rviz" pkg="rviz" type="rviz" if="$(arg rviz)" args="-d $(find tiago_2dnav)/config/rviz/navigation$(arg sim_sufix).rviz"/> 
+  <node name="rviz" pkg="rviz" type="rviz" if="$(arg rviz)" args="-d $(find tiago_2dnav)/config/rviz/navigation$(arg sim_sufix).rviz"/>
 
 </launch>
